@@ -24,13 +24,14 @@ def login():
         redirect_url = auth.get_authorization_url()
         token_data = json.dumps(auth.request_token)
 
+        print("Setting cookie with token:", token_data)  # <-- Add this line
+
         response = make_response(redirect(redirect_url))
         response.set_cookie("twitter_token", token_data, max_age=300, secure=True, httponly=True, samesite='Strict')
         return response
     except Exception as e:
         return f"Error during auth: {e}"
 
-@app.route('/callback')
 def callback():
     token_cookie = request.cookies.get("twitter_token")
     verifier = request.args.get('oauth_verifier')
